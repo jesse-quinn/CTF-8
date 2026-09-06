@@ -1,0 +1,5 @@
+# runtime MongoDB data dir (created by the inner stack)
+docker-app/mongo/
+
+# node dependencies (installed at image build time)
+docker-app/app/node_modules/

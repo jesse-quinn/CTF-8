@@ -1,0 +1,8 @@
+.git
+.gitignore
+docker-app/mongo/
+docker-app/app/node_modules/
+README.md
+CHANGELOG.md
+docs/
+LICENSE
