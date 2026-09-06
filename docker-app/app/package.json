@@ -1,0 +1,15 @@
+{
+  "name": "nodegrid-portal",
+  "version": "1.0.0",
+  "description": "NodeGrid internal operations portal",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "4.21.2",
+    "express-session": "1.18.1",
+    "mongodb": "6.12.0"
+  }
+}

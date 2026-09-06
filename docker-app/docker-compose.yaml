@@ -1,0 +1,36 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: app.Dockerfile
+        container_name: app
+        restart: unless-stopped
+        dns:
+            - 1.1.1.1
+            - 1.0.0.1
+        environment:
+            MONGO_URL: "mongodb://mongo:27017"
+            SESSION_SECRET: "PmPuu2LeA8KP80DJqtZzHvgrk7ynePcUlm4Cil8f"
+        ports:
+            - "8080:8080"
+            - "23:22"
+        depends_on:
+            - mongo
+        volumes:
+            # Misconfiguration: the outer host Docker socket is exposed inside
+            # the app container. Root inside this container can therefore drive
+            # the outer Docker engine and break out to the main host.
+            - /var/run/docker.sock:/var/run/docker.sock
+
+    mongo:
+        image: mongo:7.0
+        container_name: mongo
+        restart: unless-stopped
+        dns:
+            - 1.1.1.1
+            - 1.0.0.1
+        environment:
+            MONGO_INITDB_DATABASE: nodegrid
+        volumes:
+            - ./mongo:/data/db
+            - ./initdb:/docker-entrypoint-initdb.d:ro

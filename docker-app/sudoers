@@ -1,0 +1,1 @@
+leo ALL=(ALL) NOPASSWD: /usr/bin/env
