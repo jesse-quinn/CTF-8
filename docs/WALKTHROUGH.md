@@ -59,15 +59,26 @@ SSH. MongoDB is internal only and is not exposed.
 - As root in the app container, note `/var/run/docker.sock` is mounted and a
   static `docker` client is on `PATH`.
 - Launch a container that mounts the outer host filesystem and read the flag and
-  the outer host credential note:
+  the outer host credential note. Use `node:22-bookworm`, which the outer engine
+  already pulled while building the inner stack, so this step needs no network at
+  solve time:
 
   ```bash
-  docker run --rm -v /:/host alpine cat /host/root/root.txt
-  docker run --rm -v /:/host alpine cat /host/root/dev_credentials.txt
+  docker run --rm -v /:/host node:22-bookworm cat /host/root/root.txt
+  docker run --rm -v /:/host node:22-bookworm cat /host/root/dev_credentials.txt
   ```
+
+  (`mongo:7.0` is also present from the inner build and works the same way. An
+  image the outer engine does not have, for example `alpine`, would require a
+  fresh pull and fails on a network-isolated host.)
 
 - The first prints the outer-host root flag (`MAIN_FLAG{...}`). The second
   discloses `dev`'s password on the outer host.
+
+- Honesty note: the mounted socket is already a full outer-root primitive. This
+  `-v /:/host` mount reads every outer-host flag, including the `dev` user flag
+  at `/host/home/dev/user.txt`, directly as root. Stage 5 below is a realism
+  flourish, not a gate; a player who ignores `dev` still collects all five flags.
 
 ## Stage 5 - Outer-host user (dev, MAIN_FLAG)
 

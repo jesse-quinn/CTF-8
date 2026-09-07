@@ -22,6 +22,7 @@ RUN useradd -m -s /bin/bash leo \
     && mkdir -p /run/sshd \
     && sed -i 's/#\?PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config \
     && sed -i 's/#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config \
+    && ssh-keygen -A \
     && ln -sf /dev/null /root/.bash_history \
     && ln -sf /dev/null /home/leo/.bash_history
 
@@ -30,8 +31,10 @@ RUN useradd -m -s /bin/bash leo \
 COPY --chmod=440 ./sudoers /etc/sudoers.d/leo
 
 WORKDIR /app
-COPY ./app/package.json ./package.json
-RUN npm install --omit=dev
+# Install from the committed lockfile so transitive deps are pinned and the
+# build is reproducible.
+COPY ./app/package.json ./app/package-lock.json ./
+RUN npm ci --omit=dev
 
 COPY ./app/server.js ./server.js
 

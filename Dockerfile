@@ -11,12 +11,12 @@ RUN apt-get update \
     && sed -i "s/#PasswordAuthentication.*/PasswordAuthentication yes/" /etc/ssh/sshd_config \
     && ssh-keygen -A \
     && echo "Adding user dev" \
-    && useradd -m dev \
+    && useradd -m -s /bin/bash dev \
     && echo -n "dev:QvQSG5cQbPyoWdFVN0VO1a" | chpasswd \
     && chmod 0700 /home/dev \
     && userdel ubuntu \
-    && echo "Bash configuring" \
-    && sed -i 's#/bin/sh#/bin/bash#' /etc/passwd \
+    && echo "Bash configuring for root and dev only" \
+    && usermod -s /bin/bash root \
     && echo "Linking .bash_history to /dev/null" \
     && ln -sf /dev/null /root/.bash_history \
     && ln -sf /dev/null /home/dev/.bash_history
